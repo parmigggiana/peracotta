@@ -28,6 +28,7 @@ from peracommon import env_to_bool
 import signal
 
 from loguru import logger
+from crash_reporting import send_crash_notification
 
 logdir_path = "logs"
 
@@ -1494,11 +1495,12 @@ def tarallo_success_dialog(url: str):
 def excepthook(exc_type, exc_value, exc_tb):
     critical_errors = []  # error classes that should crash the program
 
-    # raise exc_type(exc_value)
     QtWidgets.QMessageBox.warning(None, "Error", f"Peracotta encountered an exception ({exc_type.__name__}).\nSee the logs for the traceback.")
 
-    if exc_type in critical_errors:
+    if any([exc_type is exc_t for exc_t in critical_errors]):
         QtWidgets.QApplication.quit()
+
+    raise exc_type(exc_value)  # doesn't close the program, but exits the function and shows up on the logs
 
 
 def main():
