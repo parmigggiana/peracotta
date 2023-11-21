@@ -125,7 +125,7 @@ class Ui(QtWidgets.QMainWindow):
         self.addItemComboBox.currentTextChanged.connect(self.add_toolbox_item)
         self.addItemComboBox.wheelEvent = lambda stop_wheel_event: None
 
-        # select/deselect all buttons
+        # 'select/deselect all' buttons
         self.selectAllBtn = self.findChild(QtWidgets.QPushButton, "selectBtn")
         self.selectAllBtn.clicked.connect(self.select_all_checkboxes)
         self.deselectAllBtn = self.findChild(QtWidgets.QPushButton, "deselectBtn")
@@ -203,11 +203,11 @@ class Ui(QtWidgets.QMainWindow):
         self.download_features()
 
         # Set item types available in the add item combo box
-        for the_type in self.useful_default_features["values"]["type"]:
-            tye_type_fancy = self.useful_default_features["values"]["type"][the_type]
-            self.addItemComboBox.addItem(tye_type_fancy)
-            if the_type in ICON:
-                icon = QtGui.QIcon(ICON[the_type])
+        for type_key in self.useful_default_features["values"]["type"]:
+            type_value = self.useful_default_features["values"]["type"][type_key]
+            self.addItemComboBox.addItem(type_value)
+            if type_key in ICON:
+                icon = QtGui.QIcon(ICON[type_key])
                 self.addItemComboBox.setItemIcon(self.addItemComboBox.count() - 1, icon)
 
         # Set up the item toolbox
@@ -451,7 +451,11 @@ class Ui(QtWidgets.QMainWindow):
         if self.intMoboRadioBtn.isChecked():
             return peracommon.GpuLocation.MOTHERBOARD
         if self.bothGpuRadioBtn.isChecked():
-            QtWidgets.QMessageBox.information(self, "Warning", "The integrated GPU cannot be detected in this configuration: disconnect the dedicated one and re-run peracotta if you want to parse it, or edit manually.")
+            QtWidgets.QMessageBox.information(
+                self,
+                "Warning",
+                "The integrated GPU cannot be detected in this configuration: disconnect the dedicated one and re-run peracotta if you want to parse it, or edit manually.",
+            )
             return peracommon.GpuLocation.DISCRETE
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Please, select one of the GPU locations to proceed.")
@@ -638,10 +642,7 @@ class PeracottaThread(QtCore.QThread):
     errorEvent = QtCore.pyqtSignal(str, str, name="error")
     startEvent = QtCore.pyqtSignal()
 
-    def __init__(
-        self,
-        main_window: QtWidgets.QMainWindow
-    ):
+    def __init__(self, main_window: QtWidgets.QMainWindow):
         super().__init__()
         self.main_window = main_window
 
@@ -985,9 +986,7 @@ class ToolBoxWidget(QtWidgets.QToolBox):
 
     @staticmethod
     def bmv_match(dict1, dict2) -> bool:
-        return dict1.get("brand") == dict2.get("brand") and \
-               dict1.get("model") == dict2.get("model") and \
-               dict1.get("variant") == dict2.get("variant")
+        return dict1.get("brand") == dict2.get("brand") and dict1.get("model") == dict2.get("model") and dict1.get("variant") == dict2.get("variant")
 
     def set_context_menu(self):
         counter = 0
