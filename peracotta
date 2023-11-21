@@ -14,10 +14,10 @@ from typing import Dict, List, Optional
 from urllib.error import URLError
 
 # noinspection PyUnresolvedReferences
-import PyQt5.QtWidgets
+import PyQt6.QtWidgets
 from dotenv import load_dotenv
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import QAbstractTableModel
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
+from PyQt6.QtCore import QAbstractTableModel
 from pytarallo import Tarallo
 from pytarallo.Errors import NoInternetConnectionError
 
@@ -151,15 +151,15 @@ class Ui(QtWidgets.QMainWindow):
         self.uploadBtn.clicked.connect(self.tarallo_dialog)
 
         # File actions
-        self.actionOpen = self.findChild(QtWidgets.QAction, "actionOpen")
+        self.actionOpen = self.findChild(QtGui.QAction, "actionOpen")
         self.actionOpen.triggered.connect(self.open_json)
-        self.actionOpenLastJson = self.findChild(QtWidgets.QAction, "actionOpenLastJson")
+        self.actionOpenLastJson = self.findChild(QtGui.QAction, "actionOpenLastJson")
         self.actionOpenLastJson.triggered.connect(self.open_latest_json)
-        self.actionOpenJson = self.findChild(QtWidgets.QAction, "actionOpenJson")
+        self.actionOpenJson = self.findChild(QtGui.QAction, "actionOpenJson")
         self.actionOpenJson.triggered.connect(self.show_json)
-        self.actionLoadRawFiles = self.findChild(QtWidgets.QAction, "actionLoadRawFiles")
+        self.actionLoadRawFiles = self.findChild(QtGui.QAction, "actionLoadRawFiles")
         self.actionLoadRawFiles.triggered.connect(self._load_raw_files)
-        self.actionExit = self.findChild(QtWidgets.QAction, "actionExit")
+        self.actionExit = self.findChild(QtGui.QAction, "actionExit")
         self.actionExit.triggered.connect(self.close)
 
         # Options actions
@@ -173,11 +173,11 @@ class Ui(QtWidgets.QMainWindow):
             action[-1].triggered.connect((lambda t: lambda: self.set_theme(t))(theme))
 
         # Help actions
-        self.actionAboutUs = self.findChild(QtWidgets.QAction, "actionAboutUs")
+        self.actionAboutUs = self.findChild(QtGui.QAction, "actionAboutUs")
         self.actionAboutUs.triggered.connect(self.open_website)
-        self.actionSourceCode = self.findChild(QtWidgets.QAction, "actionSourceCode")
+        self.actionSourceCode = self.findChild(QtGui.QAction, "actionSourceCode")
         self.actionSourceCode.triggered.connect(self.open_source_code)
-        self.actionVersion = self.findChild(QtWidgets.QAction, "actionVersion")
+        self.actionVersion = self.findChild(QtGui.QAction, "actionVersion")
         self.actionVersion.triggered.connect(self.show_version)
 
         # Status bar widgets
@@ -451,7 +451,11 @@ class Ui(QtWidgets.QMainWindow):
         if self.intMoboRadioBtn.isChecked():
             return peracommon.GpuLocation.MOTHERBOARD
         if self.bothGpuRadioBtn.isChecked():
-            QtWidgets.QMessageBox.information(self, "Warning", "The integrated GPU cannot be detected in this configuration: disconnect the dedicated one and re-run peracotta if you want to parse it, or edit manually.")
+            QtWidgets.QMessageBox.information(
+                self,
+                "Warning",
+                "The integrated GPU cannot be detected in this configuration: disconnect the dedicated one and re-run peracotta if you want to parse it, or edit manually.",
+            )
             return peracommon.GpuLocation.DISCRETE
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Please, select one of the GPU locations to proceed.")
@@ -638,10 +642,7 @@ class PeracottaThread(QtCore.QThread):
     errorEvent = QtCore.pyqtSignal(str, str, name="error")
     startEvent = QtCore.pyqtSignal()
 
-    def __init__(
-        self,
-        main_window: QtWidgets.QMainWindow
-    ):
+    def __init__(self, main_window: QtWidgets.QMainWindow):
         super().__init__()
         self.main_window = main_window
 
@@ -781,7 +782,7 @@ class CustomTableView(QtWidgets.QTableView):
 
     def contextMenuEvent(self, event: QtGui.QContextMenuEvent) -> None:
         menu = QtWidgets.QMenu(self)
-        remove_action = QtWidgets.QAction("Remove feature", self)
+        remove_action = QtGui.QAction("Remove feature", self)
         remove_action.triggered.connect(self.remove_row)
         menu.addAction(remove_action)
         menu.popup(QtGui.QCursor.pos())
@@ -832,9 +833,9 @@ class ToolBoxItem(QtWidgets.QWidget):
         self.table.resizeColumnsToContents()
         self.table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
-        hh = PyQt5.QtWidgets.QHeaderView = self.table.horizontalHeader()
-        hh.setSectionResizeMode(0, PyQt5.QtWidgets.QHeaderView.ResizeToContents)
-        hh.setSectionResizeMode(1, PyQt5.QtWidgets.QHeaderView.Stretch)
+        hh = PyQt6.QtWidgets.QHeaderView = self.table.horizontalHeader()
+        hh.setSectionResizeMode(0, PyQt6.QtWidgets.QHeaderView.ResizeToContents)
+        hh.setSectionResizeMode(1, PyQt6.QtWidgets.QHeaderView.Stretch)
 
     def _do_the_emergency_resize(self):
         self.parentWidget().parentWidget().updateGeometry()
@@ -985,9 +986,7 @@ class ToolBoxWidget(QtWidgets.QToolBox):
 
     @staticmethod
     def bmv_match(dict1, dict2) -> bool:
-        return dict1.get("brand") == dict2.get("brand") and \
-               dict1.get("model") == dict2.get("model") and \
-               dict1.get("variant") == dict2.get("variant")
+        return dict1.get("brand") == dict2.get("brand") and dict1.get("model") == dict2.get("model") and dict1.get("variant") == dict2.get("variant")
 
     def set_context_menu(self):
         counter = 0
@@ -1007,7 +1006,7 @@ class ToolBoxWidget(QtWidgets.QToolBox):
     def show_menu(self):
         button = self.sender()
         self.menu = QtWidgets.QMenu()
-        remove_action = QtWidgets.QAction("Remove item", self)
+        remove_action = QtGui.QAction("Remove item", self)
         remove_action.triggered.connect(lambda: self.remove_item_from_toolbox(button))
         self.menu.addAction(remove_action)
         self.menu.popup(QtGui.QCursor.pos())
@@ -1181,12 +1180,12 @@ class CustomTableModel(QAbstractTableModel):
     #         else:
     #             return None
 
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
         row = index.row()
         if row < 0 or row >= len(self.feature_keys):
             return None
 
-        if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole or role == QtCore.Qt.UserRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole or role == QtCore.Qt.EditRole or role == QtCore.Qt.ItemDataRole.UserRole:
             column = index.column()
             name = self.feature_keys[row]
             if column == 0:
