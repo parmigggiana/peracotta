@@ -35,4 +35,4 @@ if __name__ == "__main__":
     window = QtWidgets.QMainWindow()
     ui = UIMainWindow(window)
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
