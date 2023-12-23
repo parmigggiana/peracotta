@@ -40,7 +40,10 @@ def main_gui():
     app.exec()
 
     if CONFIG["AUTOMATIC_REPORT_ERRORS"] and errored():
-        send_report()
+        try:
+            send_report()
+        except Exception:
+            pass
 
 
 def main_cli():
