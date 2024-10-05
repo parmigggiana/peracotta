@@ -194,8 +194,6 @@ class GUI(QtWidgets.QMainWindow):
                 checkbox.toggled.connect(
                     lambda c=checkbox: [radio.setAutoExclusive(c) or radio.setChecked(False) or radio.setEnabled(c) for radio in self.GpuRadioBtns]
                 )
-                self.discreteRadioBtn.setEnabled(True)
-                # checkbox.toggled.connect(lambda c=checkbox: [radio.setEnabled(~c) for radio in self.GpuRadioBtns])
             if item in niy:
                 checkbox.setEnabled(False)
             layout.addWidget(checkbox)
@@ -432,6 +430,7 @@ class GUI(QtWidgets.QMainWindow):
 
     def set_thread_buttons_values(self):
         gpu_location = self.gpu_location_from_buttons()
+
         self.perathread.owner = self.ownerLineEdit.text()
         self.perathread.filters = self.get_selected_filters()
         self.perathread.gpu_location = gpu_location
